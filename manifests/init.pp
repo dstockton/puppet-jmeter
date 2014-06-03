@@ -7,9 +7,10 @@
 #   class { 'jmeter': }
 #
 class jmeter(
-  $jmeter_version         = '2.9',
+  $jmeter_version         = '2.11',
   $jmeter_plugins_install = False,
-  $jmeter_plugins_version = '1.0.0',
+  $jmeter_plugins_version = '1.1.3',
+  $manage_package         = True,
 ) {
 
   Exec { path => '/bin:/usr/bin:/usr/sbin' }
@@ -19,8 +20,10 @@ class jmeter(
     redhat => 'java-1.6.0-openjdk'
   }
 
-  package { $jdk_pkg:
-    ensure => present,
+  if $manage_package == True {
+    package { $jdk_pkg:
+      ensure => present,
+    }
   }
 
   package { 'unzip':
@@ -41,14 +44,14 @@ class jmeter(
 
   if $jmeter_plugins_install == True {  
     exec { 'download-jmeter-plugins':
-      command => "wget -P /root http://jmeter-plugins.googlecode.com/files/JMeterPlugins-${jmeter_plugins_version}.zip",
-      creates => '/root/JMeterPlugins-${jmeter_plugins_version}.zip'
+      command => "wget -P /root http://jmeter-plugins.org/downloads/file/JMeterPlugins-Standard-${jmeter_plugins_version}.zip",
+      creates => '/root/JMeterPlugins-Standard-${jmeter_plugins_version}.zip'
     }
 
     exec { 'install-jmeter-plugins':
-      command => "unzip -q -d JMeterPlugins JMeterPlugins-${jmeter_plugins_version}.zip && mv JMeterPlugins/JMeterPlugins.jar /usr/share/jmeter/lib/ext",
+      command => "unzip -q -d JMeterPlugins JMeterPlugins-Standard-${jmeter_plugins_version}.zip && mv JMeterPlugins/JMeterPlugins-Standard.jar /usr/share/jmeter/lib/ext",
       cwd     => '/root',
-      creates => '/usr/share/jmeter/lib/ext/JMeterPlugins.jar',
+      creates => '/usr/share/jmeter/lib/ext/JMeterPlugins-Standard.jar',
       require => [Package['unzip'], Exec['install-jmeter'], Exec['download-jmeter-plugins']],
     }
   }
