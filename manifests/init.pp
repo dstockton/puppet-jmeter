@@ -10,7 +10,7 @@ class jmeter(
   $jmeter_version         = '2.11',
   $jmeter_plugins_install = False,
   $jmeter_plugins_version = '1.1.3',
-  $manage_package         = True,
+  $manage_java_package    = True,
 ) {
 
   Exec { path => '/bin:/usr/bin:/usr/sbin' }
