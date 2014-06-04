@@ -19,6 +19,7 @@ class jmeter::server($server_ip = '0.0.0.0') {
     owner   => root,
     group   => root,
     mode    => 0755,
+    notify  => Service['jmeter'],
   }
 
   if $osfamily == 'debian' {
@@ -33,6 +34,5 @@ class jmeter::server($server_ip = '0.0.0.0') {
     ensure    => running,
     enable    => true,
     require   => File['/etc/init.d/jmeter'],
-    subscribe => [File['/etc/init.d/jmeter'], Exec['install-jmeter-plugins']],
   }
 }

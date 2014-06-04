@@ -53,6 +53,7 @@ class jmeter(
       cwd     => '/root',
       creates => '/usr/share/jmeter/lib/ext/JMeterPlugins-Standard.jar',
       require => [Package['unzip'], Exec['install-jmeter'], Exec['download-jmeter-plugins']],
+      notify  => Service['jmeter'],
     }
   }
 }
